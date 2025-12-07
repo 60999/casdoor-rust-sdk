@@ -12,8 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod adapter;
+mod application;
+mod cert;
 mod config;
+mod enforcer;
+mod group;
+mod invitation;
+mod model;
+mod organization;
+mod permission;
+mod provider;
+mod resource;
+mod role;
+mod session;
+mod token;
 mod user;
 
+pub use crate::entity::adapter::*;
+pub use crate::entity::application::*;
+pub use crate::entity::cert::*;
 pub use crate::entity::config::*;
+pub use crate::entity::enforcer::*;
+pub use crate::entity::group::*;
+pub use crate::entity::invitation::*;
+pub use crate::entity::model::*;
+pub use crate::entity::organization::*;
+pub use crate::entity::permission::*;
+pub use crate::entity::provider::*;
+pub use crate::entity::resource::*;
+pub use crate::entity::role::*;
+pub use crate::entity::session::*;
+pub use crate::entity::token::*;
 pub use crate::entity::user::*;
