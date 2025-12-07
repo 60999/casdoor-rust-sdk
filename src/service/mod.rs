@@ -12,8 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod application;
 mod auth;
+mod cert;
+mod group;
+mod organization;
+mod permission;
+mod resource;
+mod role;
 mod user;
 
+pub use application::ApplicationService;
 pub use auth::AuthService;
+pub use cert::CertService;
+pub use group::GroupService;
+pub use organization::OrganizationService;
+pub use permission::PermissionService;
+pub use resource::ResourceService;
+pub use role::RoleService;
 pub use user::UserService;

@@ -12,22 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod application;
-mod cert;
-mod config;
-mod group;
-mod organization;
-mod permission;
-mod resource;
-mod role;
-mod user;
+use serde::{Deserialize, Serialize};
 
-pub use crate::entity::application::*;
-pub use crate::entity::cert::*;
-pub use crate::entity::config::*;
-pub use crate::entity::group::*;
-pub use crate::entity::organization::*;
-pub use crate::entity::permission::*;
-pub use crate::entity::resource::*;
-pub use crate::entity::role::*;
-pub use crate::entity::user::*;
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CasdoorRole {
+    pub owner: String,
+    pub name: String,
+    pub created_time: String,
+    pub updated_time: String,
+    pub display_name: String,
+    pub description: String,
+    pub users: Vec<String>,
+    pub roles: Vec<String>,
+    pub permissions: Vec<String>,
+    pub is_enabled: bool,
+    pub is_hidden: bool,
+    pub is_system_role: bool,
+    pub is_public: bool,
+    pub parent_id: String,
+    pub code: String,
+    pub metadata: serde_json::Value,
+}
