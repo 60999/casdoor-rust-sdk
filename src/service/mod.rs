@@ -12,22 +12,58 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod adapter;
 mod application;
 mod auth;
 mod cert;
+mod cas;
+mod enforcer;
+mod form;
 mod group;
+mod invitation;
+mod ldap;
+mod model;
+mod order;
 mod organization;
+mod payment;
 mod permission;
+mod product;
+mod provider;
+mod record;
 mod resource;
 mod role;
+mod scim;
+mod session;
+mod syncer;
+mod system;
+mod token;
 mod user;
+mod webhook;
 
+pub use adapter::AdapterService;
 pub use application::ApplicationService;
 pub use auth::AuthService;
 pub use cert::CertService;
+pub use cas::CasService;
+pub use enforcer::EnforcerService;
+pub use form::FormService;
 pub use group::GroupService;
+pub use invitation::InvitationService;
+pub use ldap::LdapService;
+pub use model::ModelService;
+pub use order::OrderService;
 pub use organization::OrganizationService;
+pub use payment::PaymentService;
 pub use permission::PermissionService;
+pub use product::ProductService;
+pub use provider::ProviderService;
+pub use record::RecordService;
 pub use resource::ResourceService;
 pub use role::RoleService;
+pub use scim::ScimService;
+pub use session::SessionService;
+pub use syncer::SyncerService;
+pub use system::SystemService;
+pub use token::TokenService;
 pub use user::UserService;
+pub use webhook::WebhookService;

@@ -169,4 +169,221 @@ impl<'a> UserService<'a> {
     ) -> Result<StatusCode, Box<dyn std::error::Error>> {
         self.modify_user(Op::Update, user).await
     }
+
+    pub async fn get_global_users(&self) -> Result<Vec<CasdoorUser>, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/get-global-users?clientId={}&clientSecret={}",
+            self.config.endpoint, self.config.client_id, self.config.client_secret
+        );
+
+        let json = reqwest::Client::new().get(url).send().await?.json().await?;
+        Ok(serde_json::from_value(json)?)
+    }
+
+    pub async fn add_user_keys(
+        &self,
+        user: CasdoorUser,
+    ) -> Result<StatusCode, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/add-user-keys?id={}/{}&clientId={}&clientSecret={}",
+            self.config.endpoint,
+            user.owner,
+            user.name,
+            self.config.client_id,
+            self.config.client_secret
+        );
+
+        let res = reqwest::Client::new().post(url).json(&user).send().await?;
+        let status = res.status();
+        Ok(status)
+    }
+
+    pub async fn upload_users(
+        &self,
+        users: Vec<CasdoorUser>,
+    ) -> Result<StatusCode, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/upload-users?owner={}&clientId={}&clientSecret={}",
+            self.config.endpoint,
+            self.config.org_name,
+            self.config.client_id,
+            self.config.client_secret
+        );
+
+        let res = reqwest::Client::new().post(url).json(&users).send().await?;
+        let status = res.status();
+        Ok(status)
+    }
+
+    pub async fn remove_user_from_group(
+        &self,
+        user: CasdoorUser,
+        group: String,
+    ) -> Result<StatusCode, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/remove-user-from-group?userId={}/{}&groupName={}&clientId={}&clientSecret={}",
+            self.config.endpoint,
+            user.owner,
+            user.name,
+            group,
+            self.config.client_id,
+            self.config.client_secret
+        );
+
+        let res = reqwest::Client::new().post(url).send().await?;
+        let status = res.status();
+        Ok(status)
+    }
+
+    pub async fn set_password(
+        &self,
+        user: String,
+        password: String,
+    ) -> Result<StatusCode, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/set-password?userId={}/{}&clientId={}&clientSecret={}",
+            self.config.endpoint,
+            self.config.org_name,
+            user,
+            self.config.client_id,
+            self.config.client_secret
+        );
+        let body = serde_json::json!({
+            "password": password
+        });
+
+        let res = reqwest::Client::new().post(url).json(&body).send().await?;
+        Ok(res.status())
+    }
+
+    pub async fn check_user_password(
+        &self,
+        user: String,
+        password: String,
+    ) -> Result<bool, Box<dyn std::error::Error>> {
+        let url = format!("{}/api/check-user-password", self.config.endpoint);
+        let body = serde_json::json!({
+            "userId": format!("{}/{}", self.config.org_name, user),
+            "password": password,
+            "clientId": self.config.client_id,
+            "clientSecret": self.config.client_secret
+        });
+
+        let res = reqwest::Client::new().post(url).json(&body).send().await?;
+        let json = res.json().await?;
+        Ok(serde_json::from_value(json)?)
+    }
+
+    pub async fn send_verification_code(
+        &self,
+        type_: String,
+        target: String,
+    ) -> Result<StatusCode, Box<dyn std::error::Error>> {
+        let url = format!("{}/api/send-verification-code", self.config.endpoint);
+        let body = serde_json::json!({
+            "type": type_,
+            "target": target,
+            "clientId": self.config.client_id,
+            "clientSecret": self.config.client_secret
+        });
+
+        let res = reqwest::Client::new().post(url).json(&body).send().await?;
+        Ok(res.status())
+    }
+
+    pub async fn verify_code(
+        &self,
+        type_: String,
+        target: String,
+        code: String,
+    ) -> Result<bool, Box<dyn std::error::Error>> {
+        let url = format!("{}/api/verify-code", self.config.endpoint);
+        let body = serde_json::json!({
+            "type": type_,
+            "target": target,
+            "code": code,
+            "clientId": self.config.client_id,
+            "clientSecret": self.config.client_secret
+        });
+
+        let res = reqwest::Client::new().post(url).json(&body).send().await?;
+        let json = res.json().await?;
+        Ok(serde_json::from_value(json)?)
+    }
+
+    pub async fn get_captcha(&self) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/get-captcha?clientId={}&clientSecret={}",
+            self.config.endpoint, self.config.client_id, self.config.client_secret
+        );
+
+        let json = reqwest::Client::new().get(url).send().await?.json().await?;
+        Ok(json)
+    }
+
+    pub async fn verify_captcha(
+        &self,
+        ticket: String,
+        rand_str: String,
+    ) -> Result<bool, Box<dyn std::error::Error>> {
+        let url = format!("{}/api/verify-captcha", self.config.endpoint);
+        let body = serde_json::json!({
+            "ticket": ticket,
+            "randStr": rand_str,
+            "clientId": self.config.client_id,
+            "clientSecret": self.config.client_secret
+        });
+
+        let res = reqwest::Client::new().post(url).json(&body).send().await?;
+        let json = res.json().await?;
+        Ok(serde_json::from_value(json)?)
+    }
+
+    pub async fn get_email_and_phone(
+        &self,
+        user: String,
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/get-email-and-phone?userId={}/{}&clientId={}&clientSecret={}",
+            self.config.endpoint,
+            self.config.org_name,
+            user,
+            self.config.client_id,
+            self.config.client_secret
+        );
+
+        let json = reqwest::Client::new().get(url).send().await?.json().await?;
+        Ok(json)
+    }
+
+    pub async fn reset_email_or_phone(
+        &self,
+        user: String,
+        type_: String,
+        value: String,
+        code: String,
+    ) -> Result<StatusCode, Box<dyn std::error::Error>> {
+        let url = format!("{}/api/reset-email-or-phone", self.config.endpoint);
+        let body = serde_json::json!({
+            "userId": format!("{}/{}", self.config.org_name, user),
+            "type": type_,
+            "value": value,
+            "code": code,
+            "clientId": self.config.client_id,
+            "clientSecret": self.config.client_secret
+        });
+
+        let res = reqwest::Client::new().post(url).json(&body).send().await?;
+        Ok(res.status())
+    }
+
+    pub async fn get_verifications(&self) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+        let url = format!(
+            "{}/api/get-verifications?clientId={}&clientSecret={}",
+            self.config.endpoint, self.config.client_id, self.config.client_secret
+        );
+
+        let json = reqwest::Client::new().get(url).send().await?.json().await?;
+        Ok(json)
+    }
 }
