@@ -545,9 +545,7 @@ impl<'a> AuthService<'a> {
         Ok(json)
     }
 
-    pub async fn get_jwks(
-        &self,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+    pub async fn get_jwks(&self) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!("{}/.well-known/jwks.json", self.config.endpoint);
         let res = reqwest::Client::new().get(url).send().await?;
         let json = res.json().await?;

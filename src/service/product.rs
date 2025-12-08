@@ -16,42 +16,35 @@ use crate::entity::CasdoorConfig;
 
 /// ProductService provides product related operations.
 #[derive(Debug)]
-pub struct ProductService<'a>
-{
+pub struct ProductService<'a> {
     config: &'a CasdoorConfig,
 }
 
 #[allow(dead_code)]
-impl<'a> ProductService<'a>
-{
-    pub fn new(config: &'a CasdoorConfig) -> Self
-    {
+impl<'a> ProductService<'a> {
+    pub fn new(config: &'a CasdoorConfig) -> Self {
         ProductService { config }
     }
 
     /// Get all products
-    pub async fn get_products(&self) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>>
-    {
+    pub async fn get_products(&self) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-products?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 
     /// Get a product by id
-    pub async fn get_product(&self, id: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    pub async fn get_product(
+        &self,
+        id: &str,
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-product?id={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -62,16 +55,17 @@ impl<'a> ProductService<'a>
     pub async fn create_product(
         &self,
         product: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/add-product?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
-        let res = reqwest::Client::new().post(url).json(product).send().await?;
+        let res = reqwest::Client::new()
+            .post(url)
+            .json(product)
+            .send()
+            .await?;
         let json = res.json().await?;
         Ok(json)
     }
@@ -80,31 +74,36 @@ impl<'a> ProductService<'a>
     pub async fn update_product(
         &self,
         product: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/update-product?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
-        let res = reqwest::Client::new().post(url).json(product).send().await?;
+        let res = reqwest::Client::new()
+            .post(url)
+            .json(product)
+            .send()
+            .await?;
         let json = res.json().await?;
         Ok(json)
     }
 
     /// Delete a product
-    pub async fn delete_product(&self, product: &serde_json::Value) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    pub async fn delete_product(
+        &self,
+        product: &serde_json::Value,
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/delete-product?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
-        let res = reqwest::Client::new().post(url).json(product).send().await?;
+        let res = reqwest::Client::new()
+            .post(url)
+            .json(product)
+            .send()
+            .await?;
         let json = res.json().await?;
         Ok(json)
     }
@@ -113,17 +112,13 @@ impl<'a> ProductService<'a>
     pub async fn get_products_by_owner(
         &self,
         owner: &str,
-    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>>
-    {
+    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-products-by-owner?owner={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            owner,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, owner, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 }

@@ -16,42 +16,35 @@ use crate::entity::CasdoorConfig;
 
 /// PaymentService provides payment related operations.
 #[derive(Debug)]
-pub struct PaymentService<'a>
-{
+pub struct PaymentService<'a> {
     config: &'a CasdoorConfig,
 }
 
 #[allow(dead_code)]
-impl<'a> PaymentService<'a>
-{
-    pub fn new(config: &'a CasdoorConfig) -> Self
-    {
+impl<'a> PaymentService<'a> {
+    pub fn new(config: &'a CasdoorConfig) -> Self {
         PaymentService { config }
     }
 
     /// Get all payments
-    pub async fn get_payments(&self) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>>
-    {
+    pub async fn get_payments(&self) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-payments?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 
     /// Get a payment by id
-    pub async fn get_payment(&self, id: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    pub async fn get_payment(
+        &self,
+        id: &str,
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-payment?id={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -62,16 +55,17 @@ impl<'a> PaymentService<'a>
     pub async fn create_payment(
         &self,
         payment: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/add-payment?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
-        let res = reqwest::Client::new().post(url).json(payment).send().await?;
+        let res = reqwest::Client::new()
+            .post(url)
+            .json(payment)
+            .send()
+            .await?;
         let json = res.json().await?;
         Ok(json)
     }
@@ -80,16 +74,17 @@ impl<'a> PaymentService<'a>
     pub async fn update_payment(
         &self,
         payment: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/update-payment?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
-        let res = reqwest::Client::new().post(url).json(payment).send().await?;
+        let res = reqwest::Client::new()
+            .post(url)
+            .json(payment)
+            .send()
+            .await?;
         let json = res.json().await?;
         Ok(json)
     }
@@ -98,16 +93,17 @@ impl<'a> PaymentService<'a>
     pub async fn delete_payment(
         &self,
         payment: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/delete-payment?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
-        let res = reqwest::Client::new().post(url).json(payment).send().await?;
+        let res = reqwest::Client::new()
+            .post(url)
+            .json(payment)
+            .send()
+            .await?;
         let json = res.json().await?;
         Ok(json)
     }
@@ -116,54 +112,42 @@ impl<'a> PaymentService<'a>
     pub async fn get_payments_by_owner(
         &self,
         owner: &str,
-    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>>
-    {
+    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-payments-by-owner?owner={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            owner,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, owner, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 
     /// Get payments by user
     pub async fn get_payments_by_user(
         &self,
         user: &str,
-    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>>
-    {
+    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-payments-by-user?user={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            user,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, user, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 
     /// Get payments by order
     pub async fn get_payments_by_order(
         &self,
         order: &str,
-    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>>
-    {
+    ) -> Result<Vec<serde_json::Value>, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/get-payments-by-order?order={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            order,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, order, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 
     /// Process a payment
@@ -171,8 +155,7 @@ impl<'a> PaymentService<'a>
         &self,
         payment_id: &str,
         action: &str,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/process-payment?id={}&action={}&clientId={}&clientSecret={}",
             self.config.endpoint,

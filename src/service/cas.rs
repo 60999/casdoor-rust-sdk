@@ -16,29 +16,25 @@ use crate::entity::{CasdoorConfig, CasdoorUser};
 
 /// CasService provides CAS (Central Authentication Service) related operations.
 #[derive(Debug)]
-pub struct CasService<'a>
-{
+pub struct CasService<'a> {
     config: &'a CasdoorConfig,
 }
 
 #[allow(dead_code)]
-impl<'a> CasService<'a>
-{
-    pub fn new(config: &'a CasdoorConfig) -> Self
-    {
+impl<'a> CasService<'a> {
+    pub fn new(config: &'a CasdoorConfig) -> Self {
         CasService { config }
     }
 
     /// CAS 1.0: Validate ticket
-    pub async fn cas_validate(&self, ticket: &str, service: &str) -> Result<String, Box<dyn std::error::Error>>
-    {
+    pub async fn cas_validate(
+        &self,
+        ticket: &str,
+        service: &str,
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/cas/validate?ticket={}&service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            ticket,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, ticket, service, self.config.client_id, self.config.client_secret
         );
 
         let text = reqwest::Client::new().get(url).send().await?.text().await?;
@@ -51,15 +47,10 @@ impl<'a> CasService<'a>
         ticket: &str,
         service: &str,
         pgt_url: Option<&str>,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/cas/serviceValidate?ticket={}&service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            ticket,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, ticket, service, self.config.client_id, self.config.client_secret
         );
 
         if let Some(pgt_url) = pgt_url {
@@ -76,15 +67,10 @@ impl<'a> CasService<'a>
         ticket: &str,
         service: &str,
         pgt_url: Option<&str>,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/cas/proxyValidate?ticket={}&service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            ticket,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, ticket, service, self.config.client_id, self.config.client_secret
         );
 
         if let Some(pgt_url) = pgt_url {
@@ -101,15 +87,10 @@ impl<'a> CasService<'a>
         ticket: &str,
         service: &str,
         pgt_url: Option<&str>,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/cas/p3/serviceValidate?ticket={}&service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            ticket,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, ticket, service, self.config.client_id, self.config.client_secret
         );
 
         if let Some(pgt_url) = pgt_url {
@@ -126,15 +107,10 @@ impl<'a> CasService<'a>
         ticket: &str,
         service: &str,
         pgt_url: Option<&str>,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/cas/p3/proxyValidate?ticket={}&service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            ticket,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, ticket, service, self.config.client_id, self.config.client_secret
         );
 
         if let Some(pgt_url) = pgt_url {
@@ -150,8 +126,7 @@ impl<'a> CasService<'a>
         &self,
         pgt: &str,
         target_service: &str,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/cas/proxy?pgt={}&targetService={}&clientId={}&clientSecret={}",
             self.config.endpoint,
@@ -170,19 +145,14 @@ impl<'a> CasService<'a>
         &self,
         ticket: &str,
         service: &str,
-    ) -> Result<CasdoorUser, Box<dyn std::error::Error>>
-    {
+    ) -> Result<CasdoorUser, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/cas/getUserProfile?ticket={}&service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            ticket,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, ticket, service, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
-        Ok(serde_json::from_value(json)?)  
+        Ok(serde_json::from_value(json)?)
     }
 
     /// CAS: Login URL
@@ -191,14 +161,10 @@ impl<'a> CasService<'a>
         service: &str,
         renew: Option<bool>,
         gateway: Option<bool>,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/cas/getLoginUrl?service={}&clientId={}&clientSecret={}",
-            self.config.endpoint,
-            service,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, service, self.config.client_id, self.config.client_secret
         );
 
         if let Some(renew) = renew {
@@ -217,13 +183,10 @@ impl<'a> CasService<'a>
     pub async fn cas_get_logout_url(
         &self,
         service: Option<&str>,
-    ) -> Result<String, Box<dyn std::error::Error>>
-    {
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/cas/getLogoutUrl?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         if let Some(service) = service {

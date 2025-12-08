@@ -16,29 +16,23 @@ use crate::entity::CasdoorConfig;
 
 /// ScimService provides SCIM (System for Cross-domain Identity Management) related operations.
 #[derive(Debug)]
-pub struct ScimService<'a>
-{
+pub struct ScimService<'a> {
     config: &'a CasdoorConfig,
 }
 
 #[allow(dead_code)]
-impl<'a> ScimService<'a>
-{
-    pub fn new(config: &'a CasdoorConfig) -> Self
-    {
+impl<'a> ScimService<'a> {
+    pub fn new(config: &'a CasdoorConfig) -> Self {
         ScimService { config }
     }
 
     /// SCIM: Get Service Provider Configuration
     pub async fn scim_get_service_provider_config(
         &self,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/.well-known/scim-configuration?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -48,13 +42,10 @@ impl<'a> ScimService<'a>
     /// SCIM: Get Resource Types
     pub async fn scim_get_resource_types(
         &self,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/ResourceTypes?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -62,15 +53,10 @@ impl<'a> ScimService<'a>
     }
 
     /// SCIM: Get Schemas
-    pub async fn scim_get_schemas(
-        &self,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    pub async fn scim_get_schemas(&self) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Schemas?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -83,13 +69,10 @@ impl<'a> ScimService<'a>
         filter: Option<&str>,
         start_index: Option<i32>,
         count: Option<i32>,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/scim/Users?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         if let Some(filter) = filter {
@@ -110,14 +93,10 @@ impl<'a> ScimService<'a>
     pub async fn scim_get_user(
         &self,
         id: &str,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Users/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -128,13 +107,10 @@ impl<'a> ScimService<'a>
     pub async fn scim_create_user(
         &self,
         user: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Users?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().post(url).json(user).send().await?;
@@ -147,14 +123,10 @@ impl<'a> ScimService<'a>
         &self,
         id: &str,
         user: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Users/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().put(url).json(user).send().await?;
@@ -167,14 +139,10 @@ impl<'a> ScimService<'a>
         &self,
         id: &str,
         patch: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Users/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().patch(url).json(patch).send().await?;
@@ -186,14 +154,10 @@ impl<'a> ScimService<'a>
     pub async fn scim_delete_user(
         &self,
         id: &str,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Users/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().delete(url).send().await?;
@@ -207,13 +171,10 @@ impl<'a> ScimService<'a>
         filter: Option<&str>,
         start_index: Option<i32>,
         count: Option<i32>,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let mut url = format!(
             "{}/api/scim/Groups?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         if let Some(filter) = filter {
@@ -234,14 +195,10 @@ impl<'a> ScimService<'a>
     pub async fn scim_get_group(
         &self,
         id: &str,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Groups/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let json = reqwest::Client::new().get(url).send().await?.json().await?;
@@ -252,13 +209,10 @@ impl<'a> ScimService<'a>
     pub async fn scim_create_group(
         &self,
         group: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Groups?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().post(url).json(group).send().await?;
@@ -271,14 +225,10 @@ impl<'a> ScimService<'a>
         &self,
         id: &str,
         group: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Groups/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().put(url).json(group).send().await?;
@@ -291,14 +241,10 @@ impl<'a> ScimService<'a>
         &self,
         id: &str,
         patch: &serde_json::Value,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Groups/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().patch(url).json(patch).send().await?;
@@ -310,14 +256,10 @@ impl<'a> ScimService<'a>
     pub async fn scim_delete_group(
         &self,
         id: &str,
-    ) -> Result<serde_json::Value, Box<dyn std::error::Error>>
-    {
+    ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
         let url = format!(
             "{}/api/scim/Groups/{}?clientId={}&clientSecret={}",
-            self.config.endpoint,
-            id,
-            self.config.client_id,
-            self.config.client_secret
+            self.config.endpoint, id, self.config.client_id, self.config.client_secret
         );
 
         let res = reqwest::Client::new().delete(url).send().await?;
